@@ -38,7 +38,7 @@ class MedCPTNumpyEmbeddings:
     
     def open_single_np_chunk(self, fname):
         
-        k = fname.stem.split('_')[-1]
+        k = fname.stem.split('_chunk_')[-1]
         v = np.load(
             fname,
             mmap_mode=self.memmap,
@@ -102,7 +102,7 @@ class MedCPTNumpyEmbeddings:
         
         self.chunk_to_pmids_list_dict = dict(
             zip(
-                [fname.stem.split('_')[-1] for fname in self.pmids_chunk_json_flist],
+                [fname.stem.split('_chunk_')[-1] for fname in self.pmids_chunk_json_flist],
                 self.pmids_chunk_list
             )
         )
@@ -114,7 +114,7 @@ class MedCPTNumpyEmbeddings:
             desc='Constructing PMID lookup index'
         ):
             for row_idx, pmid in enumerate(pmids_list):
-                emb_loc = f'{chunk_idx}_{row_idx}'
+                emb_loc = f'{chunk_idx}|{row_idx}'
 
                 pmids_to_loc_dict[pmid] = emb_loc
                 
@@ -126,7 +126,7 @@ class MedCPTNumpyEmbeddings:
         
         emb_loc = self.pmids_to_loc_dict[pmid]
     
-        chunk_idx, row_idx = emb_loc.split('_')
+        chunk_idx, row_idx = emb_loc.split('|')
 
         emb_np = self.emb_chunks_dict[chunk_idx][int(row_idx)]
 
